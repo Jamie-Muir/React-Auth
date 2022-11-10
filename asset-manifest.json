@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/react-auth/static/css/main.4a34a444.chunk.css",
-    "main.js": "/react-auth/static/js/main.aabe59dc.chunk.js",
-    "main.js.map": "/react-auth/static/js/main.aabe59dc.chunk.js.map",
+    "main.js": "/react-auth/static/js/main.34193b69.chunk.js",
+    "main.js.map": "/react-auth/static/js/main.34193b69.chunk.js.map",
     "runtime-main.js": "/react-auth/static/js/runtime-main.c164e0f2.js",
     "runtime-main.js.map": "/react-auth/static/js/runtime-main.c164e0f2.js.map",
     "static/js/2.6b491159.chunk.js": "/react-auth/static/js/2.6b491159.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.c164e0f2.js",
     "static/js/2.6b491159.chunk.js",
     "static/css/main.4a34a444.chunk.css",
-    "static/js/main.aabe59dc.chunk.js"
+    "static/js/main.34193b69.chunk.js"
   ]
 }
