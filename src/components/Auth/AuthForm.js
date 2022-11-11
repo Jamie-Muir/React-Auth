@@ -26,9 +26,9 @@ const AuthForm = () => {
 		history.replace('/')
 	}
 
-	const handleError = (err) => {
-		alert(err);
-	}
+	// const handleError = (err) => {
+	// 	alert(err);
+	// }
 
 	const submitHandler = async (event) => {
 		event.preventDefault();
@@ -54,7 +54,9 @@ const AuthForm = () => {
 				'Content-Type': 'application/json'
 			},
 		}, saveToken)
-		.catch(handleError)
+		.catch((err) => {
+			alert(err);
+		});
 	}
 
 	return (
