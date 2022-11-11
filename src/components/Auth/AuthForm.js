@@ -14,7 +14,7 @@ const AuthForm = () => {
 
 	const [isLogin, setIsLogin] = useState(true);
 	// const [isLoading, setIsLoading] = useState(false);
-	const { isLoading, sendRequest: sendLoginRequest } = useHttp();
+	const { isLoading, error, sendRequest: sendLoginRequest } = useHttp();
 
 	const switchAuthModeHandler = () => {
 		setIsLogin((prevState) => !prevState);
@@ -24,6 +24,10 @@ const AuthForm = () => {
 		const expirationTime = new Date(new Date().getTime() + (+data.expiresIn * 1000));
 		authCtx.login(data.idToken, expirationTime.toISOString());
 		history.replace('/')
+	}
+
+	const handleError = (err) => {
+		alert(err);
 	}
 
 	const submitHandler = async (event) => {
@@ -38,7 +42,7 @@ const AuthForm = () => {
 		isLogin ? url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAoFi3e8-mTtwVKGBrRn7KMJEdZy2GNnfY'
 			: url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAoFi3e8-mTtwVKGBrRn7KMJEdZy2GNnfY'
 
-		sendLoginRequest({
+		await sendLoginRequest({
 			url,
 			method: 'POST',
 			body: {
@@ -49,7 +53,8 @@ const AuthForm = () => {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-		}, saveToken);
+		}, saveToken)
+		.catch(handleError)
 	}
 
 	return (
