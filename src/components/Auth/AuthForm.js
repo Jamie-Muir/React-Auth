@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import AuthContext from '../store/auth-context';
 import classes from './AuthForm.module.css';
-// import useHTTP from '../../hooks/use-http';
+import useHttp from '../../hooks/use-http';
 
 const AuthForm = () => {
 	const history = useHistory();
@@ -13,15 +13,20 @@ const AuthForm = () => {
 	const authCtx = useContext(AuthContext);
 
 	const [isLogin, setIsLogin] = useState(true);
-	const [isLoading, setIsLoading] = useState(false);
-
-	// useHTTP({url:'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAoFi3e8-mTtwVKGBrRn7KMJEdZy2GNnfY'})
+	// const [isLoading, setIsLoading] = useState(false);
+	const { isLoading, sendRequest: sendLoginRequest } = useHttp();
 
 	const switchAuthModeHandler = () => {
 		setIsLogin((prevState) => !prevState);
 	};
 
-	const submitHandler = (event) => {
+	const saveToken = (data) => {
+		const expirationTime = new Date(new Date().getTime() + (+data.expiresIn * 1000));
+		authCtx.login(data.idToken, expirationTime.toISOString());
+		history.replace('/')
+	}
+
+	const submitHandler = async (event) => {
 		event.preventDefault();
 
 		const enteredEmail = emailInputRef.current.value;
@@ -29,51 +34,22 @@ const AuthForm = () => {
 
 		// add validation
 
-		setIsLoading(true);
 		let url;
+		isLogin ? url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAoFi3e8-mTtwVKGBrRn7KMJEdZy2GNnfY'
+			: url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAoFi3e8-mTtwVKGBrRn7KMJEdZy2GNnfY'
 
-
-		if (isLogin) {
-			url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAoFi3e8-mTtwVKGBrRn7KMJEdZy2GNnfY'
-
-		} else {
-			url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAoFi3e8-mTtwVKGBrRn7KMJEdZy2GNnfY'
-		}
-
-		fetch(url, {
+		sendLoginRequest({
+			url,
 			method: 'POST',
-			body: JSON.stringify({
+			body: {
 				email: enteredEmail,
 				password: enteredPassword,
 				returnSecureToken: true
-			}),
+			},
 			headers: {
 				'Content-Type': 'application/json'
-			}
-		})
-		.then(res => {
-			setIsLoading(false);
-			if (res.ok) {
-				return res.json();
-			} else {
-				return res.json().then((data) => {
-					let errorMessage = 'Authentication Failed!';
-					// if (data && data.error && data.error.message) {
-					// 	errorMessage = data.error.message;
-					// }
-					throw new Error(errorMessage);
-				})
-			}
-		})
-		.then((data) => {
-			const expirationTime = new Date(new Date().getTime() + (+data.expiresIn * 1000));
-
-			authCtx.login(data.idToken, expirationTime.toISOString());
-			history.replace('/')
-		})
-		.catch((err) => {
-			alert(err.message);
-		});
+			},
+		}, saveToken);
 	}
 
 	return (
